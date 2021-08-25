@@ -192,3 +192,7 @@ def plot_with_err(*vals):
     plt.yticks(ind, lbls)
     plt.tight_layout()
     plt.show()
+
+    print(bars)
+    print(lbls)
+    print(ratios)

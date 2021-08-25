@@ -8,7 +8,9 @@ from keras.layers import GaussianNoise
 
 from spectral_metric.embedding.common import GenericAutoEncoder, EmbeddingGetter
 from spectral_metric.embedding.utils import need_sequence
-from spectral_metric.handle_datasets import all_datasets, paper_dataset
+from spectral_metric.handle_datasets import all_datasets, paper_dataset, add_dataset
+# from spectral_metric.handle_datasets import read_tiny_imagenet, TINY_IMAGENET
+from spectral_metric.handle_datasets import read_imagenet, IMAGENET
 
 pjoin = os.path.join
 
@@ -62,6 +64,7 @@ class AutoencoderEmbd(EmbeddingGetter):
 def main():
     for k in paper_dataset:
         print(k)
+        add_dataset(k, read_imagenet, IMAGENET)
         (data, target), _ = all_datasets[k]()
         AutoencoderEmbd()(data, k)
         K.clear_session()

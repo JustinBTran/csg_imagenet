@@ -104,3 +104,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# datasets stored in repository locally
+/imagenet-200
+/imagenette2-160
+/tiny

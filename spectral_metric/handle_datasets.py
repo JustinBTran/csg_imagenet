@@ -11,10 +11,11 @@ from scipy.io import loadmat
 glob = lambda k: sorted(gl(k))
 pjoin = os.path.join
 
-if 'DATASET_ROOT' not in os.environ:
-    warnings.warn("$DATASET_ROOT is not set, defaulting to author's path.")
-    os.environ['DATASET_ROOT'] = '/media/braf3002/hdd2'
+# if 'DATASET_ROOT' not in os.environ:
+#     warnings.warn("$DATASET_ROOT is not set, defaulting to author's path.")
+#     os.environ['DATASET_ROOT'] = '/media/braf3002/hdd2'
 
+print(os.environ['DATASET_ROOT'])
 DATASET_ROOT = os.environ['DATASET_ROOT']
 assert os.path.exists(DATASET_ROOT), '$DATASET_ROOT is not a valid path!'
 
@@ -27,7 +28,132 @@ STL10 = pjoin(DATASET_ROOT, 'Datasets/stl10/')
 COMP_CARS = pjoin(DATASET_ROOT, 'Datasets/compCars/data')
 MIOTCD = pjoin(DATASET_ROOT, 'Datasets/mio_tcd_classification')
 CHINA = pjoin(DATASET_ROOT, 'Datasets/ChinaSet_AllFiles')
+IMAGENETTE = pjoin(DATASET_ROOT, 'imagenette2-160')
+TINY_IMAGENET = 'C:\\Users\\justi\Documents\\tiny\\tiny-imagenet-200'
+IMAGENET = pjoin(DATASET_ROOT, 'imagenet-200')
 
+def read_imagenet(path):
+    imgs = {'train': [], 'val': []}
+    labels = {'train': [], 'val': []}
+    train_path = pjoin(path, "train")
+    val_path = pjoin(path, "val")
+
+    img_dim = (64, 64)
+
+    classes = {}
+    class_cnt = 0
+
+    #Ge the images in the training set
+    for root, dirs, files in os.walk(train_path):
+        for dir in dirs: #each directory corresponds to a class
+            sub_path = pjoin(train_path, dir, 'images')
+            classes[dir] = class_cnt
+            class_cnt += 1
+            for sub_root, sub_dirs, sub_files in os.walk(sub_path):
+                for sub_file in sub_files:
+                    img_path = pjoin(sub_path, sub_file)
+                    img = cv2.resize(cv2.imread(img_path), img_dim)
+                    imgs['train'].append(img)
+                    labels['train'].append(classes[dir])
+
+    with open(pjoin(val_path, 'val_annotations.txt'), 'r') as f:
+        lines = f.readlines()
+
+    file_to_class = {} #map the validation images to their class
+    for line in lines:
+        data = line.split('\t')
+        file_to_class[data[0]] = data[1]
+
+    val_img_path = pjoin(val_path, 'images')
+
+    for root, dirs, files in os.walk(val_img_path):
+        for file in files:
+            img_path = pjoin(val_img_path,file)
+            img = cv2.resize(cv2.imread(img_path), img_dim)
+            imgs['val'].append(img)
+            cls = file_to_class[file]
+            if cls not in classes:
+                classes[cls] = class_cnt
+                class_cnt += 1
+            labels['val'].append(classes[cls])
+
+    return (np.array(imgs['train']), np.array(labels['train'])), (np.array(imgs['val']), np.array(labels['val']))
+
+# def read_tiny_imagenet(path):
+#     imgs = {'train': [], 'val': []}
+#     labels = {'train': [], 'val': []}
+#     train_path = pjoin(path, "train")
+#     val_path = pjoin(path, "val")
+#
+#     img_dim = (64, 64)
+#
+#     classes = []
+#
+#     #Ge the images in the training set
+#     for root, dirs, files in os.walk(train_path):
+#         for dir in dirs: #each directory corresponds to a class
+#             sub_path = pjoin(train_path, dir, 'images')
+#             classes.append(dir)
+#             for sub_root, sub_dirs, sub_files in os.walk(sub_path):
+#                 for sub_file in sub_files:
+#                     img_path = pjoin(sub_path, sub_file)
+#                     img = cv2.resize(cv2.imread(img_path), img_dim)
+#                     imgs['train'].append(img)
+#                     labels['train'].append(classes.index(dir))
+#
+#     with open(pjoin(val_path, 'val_annotations.txt'), 'r') as f:
+#         lines = f.readlines()
+#
+#     file_to_class = {} #map the validation images to their class
+#     for line in lines:
+#         data = line.split('\t')
+#         file_to_class[data[0]] = data[1]
+#
+#     val_img_path = pjoin(val_path, 'images')
+#
+#     for root, dirs, files in os.walk(val_img_path):
+#         for file in files:
+#             img_path = pjoin(val_img_path,file)
+#             img = cv2.resize(cv2.imread(img_path), img_dim)
+#             imgs['val'].append(img)
+#             cls = file_to_class[file]
+#             if cls not in classes:
+#                 classes.append(cls)
+#             labels['val'].append(classes.index(cls))
+#
+#     return (np.array(imgs['train']), np.array(labels['train'])), (np.array(imgs['val']), np.array(labels['val']))
+
+
+def read_imagenette(path):
+    imgs = {'train': [], 'test': []}
+    labels = {'train': [], 'test': []}
+    train_path = pjoin(path, "train")
+    test_path = pjoin(path, "val")
+
+    classes = []
+
+    for root, dirs, files in os.walk(train_path):
+        for dir in dirs: #each directory corresponds to a class
+            sub_path = pjoin(train_path, dir)
+            classes.append(dir)
+            for sub_root, sub_dirs, sub_files in os.walk(sub_path):
+                for sub_file in sub_files:
+                    img_path = pjoin(sub_path, sub_file)
+                    img = cv2.resize(cv2.imread(img_path), (213, 160))
+                    imgs['train'].append(img)
+                    labels['train'].append(classes.index(dir))
+
+    for root, dirs, files in os.walk(test_path):
+        for dir in dirs: #each directory corresponds to a class
+            sub_path = pjoin(test_path, dir)
+            for sub_root, sub_dirs, sub_files in os.walk(sub_path):
+                for sub_file in sub_files:
+                    img_path = pjoin(sub_path, sub_file)
+                    img = cv2.resize(cv2.imread(img_path), (160, 160))
+                    imgs['test'].append(img)
+                    labels['test'].append(classes.index(dir))
+
+    return (np.array(imgs['train']), np.array(labels['train'])), (np.array(imgs['test']), np.array(labels['test']))
 
 def read_notMnist(path):
     """Read the notMNIST dataset"""
@@ -259,7 +385,8 @@ def add_dataset(ds_name, func, *args):
 
 
 # dataset used in the paper
-paper_dataset = ['mnist', 'notMNIST', 'svhn', 'stl10', 'inria', 'seefood', 'cifar10', 'compcars']
+# paper_dataset = ['mnist', 'notMNIST', 'svhn', 'stl10', 'inria', 'seefood', 'cifar10', 'compcars']
+paper_dataset = ['tiny_imagenet']
 two_class_dataset = ['inria', 'seefood']
 ten_class_dataset = ['notMNIST', 'svhnfull', 'stl10', 'mnist', 'cifar10', 'compcars']
 
@@ -267,20 +394,19 @@ ten_class_dataset = ['notMNIST', 'svhnfull', 'stl10', 'mnist', 'cifar10', 'compc
 def main():
     # Sanity check to see if we can read all datasets
     PATHS = [notMNIST, INRIA, SEEFOOD, COMP_CARS, STL10, SVHN]
-    PATHS = [CHINA]
+    PATHS = [IMAGENET]
     FUNCS = [read_notMnist, read_inria, read_seefood, read_compcars, read_STL10, read_SVHN]
-    FUNCS = [read_china_set]
+    FUNCS = [read_imagenet]
 
-    (X_train, Y_train), k = read_cifar10_deer_dog()
-    print(X_train.shape)
-    print(np.unique(Y_train, return_counts=True))
+    # (X_train, Y_train), k = read_cifar10_deer_dog()
+    # print(X_train.shape)
+    # print(np.unique(Y_train, return_counts=True))
 
     for f, p in zip(FUNCS, PATHS):
         print(p)
         (X_train, Y_train), k = f(p)
         print(X_train.shape)
         print(np.unique(Y_train, return_counts=True))
-        print()
 
 
 if __name__ == '__main__':

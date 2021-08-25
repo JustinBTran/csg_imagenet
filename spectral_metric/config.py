@@ -3,7 +3,9 @@ import types
 
 import numpy as np
 
-from spectral_metric.handle_datasets import all_datasets
+from spectral_metric.handle_datasets import all_datasets, IMAGENETTE, read_imagenette, add_dataset
+# from spectral_metric.handle_datasets import read_tiny_imagenet, TINY_IMAGENET
+from spectral_metric.handle_datasets import read_imagenet, IMAGENET
 
 EMBEDDINGS = ['embd', 'cnn_embd', 'vgg', 'xception']
 
@@ -15,6 +17,7 @@ if not os.path.exists(TMP_DIR):
 
 np.set_printoptions(suppress=True, linewidth=320, precision=5)
 VERBOSE = False
+
 
 
 def log(*args, **kwargs):
@@ -54,6 +57,12 @@ def read_ds(ds_name):
     Returns: (X_train, Y_train), (X_test, Y_test)
 
     """
+
+    # add_dataset(ds_name, read_imagenette, IMAGENETTE)
+    # add_dataset(ds_name, read_tiny_imagenet, TINY_IMAGENET)
+    add_dataset(ds_name, read_imagenet, IMAGENET)
+
+
     # Get the mapping function
     ds = all_datasets[ds_name]
     # The dataset may be a tuple (function, arguments)
