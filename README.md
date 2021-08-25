@@ -8,3 +8,4 @@ Steps:
 2. Move the imagenet data folder to the root directory of this project
 3. Download the requiremetns using 'pip install -r requirements.txt' 
 4. On line 41 of spectral_metric/handle_datasets.py, change the image_dim to match the dimensions of the images in imagenet
+5. Use the command 'python main.py imagenet --embd embd' to get both the embedding and csg for imagenet
