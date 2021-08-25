@@ -3,5 +3,5 @@ Python Version: This project requires Python 3.7. It will not work with Python 3
 
 Steps:
 
-1. On command line type in  the following
- `export DATASET_ROOT=$PWD`  
+1. On command line type in  the following\n
+ `export DATASET_ROOT=$PWD`  or `set DATASET_ROOT=%cd%` on windows
