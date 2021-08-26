@@ -79,49 +79,49 @@ def read_imagenet(path):
 
     return (np.array(imgs['train']), np.array(labels['train'])), (np.array(imgs['val']), np.array(labels['val']))
 
-# def read_tiny_imagenet(path):
-#     imgs = {'train': [], 'val': []}
-#     labels = {'train': [], 'val': []}
-#     train_path = pjoin(path, "train")
-#     val_path = pjoin(path, "val")
-#
-#     img_dim = (64, 64)
-#
-#     classes = []
-#
-#     #Ge the images in the training set
-#     for root, dirs, files in os.walk(train_path):
-#         for dir in dirs: #each directory corresponds to a class
-#             sub_path = pjoin(train_path, dir, 'images')
-#             classes.append(dir)
-#             for sub_root, sub_dirs, sub_files in os.walk(sub_path):
-#                 for sub_file in sub_files:
-#                     img_path = pjoin(sub_path, sub_file)
-#                     img = cv2.resize(cv2.imread(img_path), img_dim)
-#                     imgs['train'].append(img)
-#                     labels['train'].append(classes.index(dir))
-#
-#     with open(pjoin(val_path, 'val_annotations.txt'), 'r') as f:
-#         lines = f.readlines()
-#
-#     file_to_class = {} #map the validation images to their class
-#     for line in lines:
-#         data = line.split('\t')
-#         file_to_class[data[0]] = data[1]
-#
-#     val_img_path = pjoin(val_path, 'images')
-#
-#     for root, dirs, files in os.walk(val_img_path):
-#         for file in files:
-#             img_path = pjoin(val_img_path,file)
-#             img = cv2.resize(cv2.imread(img_path), img_dim)
-#             imgs['val'].append(img)
-#             cls = file_to_class[file]
-#             if cls not in classes:
-#                 classes.append(cls)
-#             labels['val'].append(classes.index(cls))
-#
-#     return (np.array(imgs['train']), np.array(labels['train'])), (np.array(imgs['val']), np.array(labels['val']))
+def read_tiny_imagenet(path):
+    imgs = {'train': [], 'val': []}
+    labels = {'train': [], 'val': []}
+    train_path = pjoin(path, "train")
+    val_path = pjoin(path, "val")
+
+    img_dim = (64, 64)
+
+    classes = []
+
+    #Ge the images in the training set
+    for root, dirs, files in os.walk(train_path):
+        for dir in dirs: #each directory corresponds to a class
+            sub_path = pjoin(train_path, dir, 'images')
+            classes.append(dir)
+            for sub_root, sub_dirs, sub_files in os.walk(sub_path):
+                for sub_file in sub_files:
+                    img_path = pjoin(sub_path, sub_file)
+                    img = cv2.resize(cv2.imread(img_path), img_dim)
+                    imgs['train'].append(img)
+                    labels['train'].append(classes.index(dir))
+
+    with open(pjoin(val_path, 'val_annotations.txt'), 'r') as f:
+        lines = f.readlines()
+
+    file_to_class = {} #map the validation images to their class
+    for line in lines:
+        data = line.split('\t')
+        file_to_class[data[0]] = data[1]
+
+    val_img_path = pjoin(val_path, 'images')
+
+    for root, dirs, files in os.walk(val_img_path):
+        for file in files:
+            img_path = pjoin(val_img_path,file)
+            img = cv2.resize(cv2.imread(img_path), img_dim)
+            imgs['val'].append(img)
+            cls = file_to_class[file]
+            if cls not in classes:
+                classes.append(cls)
+            labels['val'].append(classes.index(cls))
+
+    return (np.array(imgs['train']), np.array(labels['train'])), (np.array(imgs['val']), np.array(labels['val']))
 
 
 def read_imagenette(path):
