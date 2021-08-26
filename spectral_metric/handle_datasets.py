@@ -52,7 +52,8 @@ def read_imagenet(path):
             for sub_root, sub_dirs, sub_files in os.walk(sub_path):
                 for sub_file in sub_files:
                     img_path = pjoin(sub_path, sub_file)
-                    img = cv2.resize(cv2.imread(img_path), img_dim)
+                    img = cv2.imread(img_path)
+                    #img = cv2.resize(img, img_dim)
                     imgs['train'].append(img)
                     labels['train'].append(classes[dir])
 
@@ -69,7 +70,8 @@ def read_imagenet(path):
     for root, dirs, files in os.walk(val_img_path):
         for file in files:
             img_path = pjoin(val_img_path,file)
-            img = cv2.resize(cv2.imread(img_path), img_dim)
+            img = cv2.imread(img_path)
+            # img = cv2.resize(img, img_dim)
             imgs['val'].append(img)
             cls = file_to_class[file]
             if cls not in classes:
@@ -386,7 +388,7 @@ def add_dataset(ds_name, func, *args):
 
 # dataset used in the paper
 # paper_dataset = ['mnist', 'notMNIST', 'svhn', 'stl10', 'inria', 'seefood', 'cifar10', 'compcars']
-paper_dataset = ['tiny_imagenet']
+paper_dataset = ['imagenet']
 two_class_dataset = ['inria', 'seefood']
 ten_class_dataset = ['notMNIST', 'svhnfull', 'stl10', 'mnist', 'cifar10', 'compcars']
 
