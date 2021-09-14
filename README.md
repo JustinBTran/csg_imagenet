@@ -3,7 +3,7 @@ Python Version: This project requires Python 3.7. It will not work with Python 3
 
 Steps:
 
-1. On command line type in  the following\n
+1. On command line type in  the following
  `export DATASET_ROOT=$PWD`  or `set DATASET_ROOT=%cd%` on windows
 2. Move the imagenet data folder to the root directory of this project
 3. Download the requiremetns using 'pip install -r requirements.txt' 
